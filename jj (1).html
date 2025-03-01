@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            overflow: hidden;
+            position: relative;
+            font-family: Arial, sans-serif;
+            transition: background 1s ease-in-out;
+        }
+
+        .button {
+            position: absolute;
+            z-index: 10;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #ff5e62, #ff9966);
+            border: none;
+            padding: 20px 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 183, 77, 0.8);
+        }
+
+        .button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 50% 75%, 20% 100%, 0% 35%);
+            background: linear-gradient(135deg, #ff5e62, #ff9966);
+        }
+
+        .button span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .dollar, .heart {
+            position: absolute;
+            font-size: 30px;
+            font-weight: bold;
+            animation: fall 2s linear forwards;
+            text-shadow: 2px 2px 10px rgba(0, 255, 0, 0.7);
+        }
+
+        .dollar {
+            color: #4CAF50;
+        }
+
+        .heart {
+            color: red;
+            font-size: 35px;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        .image-container {
+            position: relative;
+            width: 80%;
+            max-width: 400px;
+            height: auto;
+            background-color: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            z-index: -1;
+        }
+
+        /* Animation pour les confettis */
+        @keyframes confettiFall {
+            0% { opacity: 1; transform: translateY(-100vh); }
+            100% { opacity: 0; transform: translateY(100vh); }
+        }
+
+        .confetti {
+            position: absolute;
+            background-color: #FFEB3B;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: confettiFall 2s linear infinite;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="button" id="clickButton" onclick="showImage()">
+        <span>Click Me</span>
+    </button>
+
+    <div class="image-container" id="imageContainer">
+        <img src="https://lh3.googleusercontent.com/d/1BD_k2rEELodsf4y8q2sQ1YcdHYnw_FNV" alt="Image">
+    </div>
+
+    <script>
+        function showImage() {
+            // Cacher le bouton après le clic
+            let btn = document.getElementById('clickButton');
+            btn.style.display = "none";
+
+            // Afficher l'image après le clic
+            let imgContainer = document.getElementById('imageContainer');
+            imgContainer.style.opacity = "1";
+
+            // Ajouter des confettis
+            for (let i = 0; i < 30; i++) {
+                let confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.animationDuration = `${Math.random() * 2 + 2}s`;
+                document.body.appendChild(confetti);
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            // Ignorer les clics sur le bouton
+            if (event.target.id === 'clickButton') return;
+
+            // Créer un symbole qui tombe
+            let symbols = ["$","🙉","🐒","🦍","🦧","🌟","🖖","🙊"];
+            let symbol = symbols[Math.floor(Math.random() * symbols.length)];
+
+            let fallingElement = document.createElement('div');
+            fallingElement.classList.add(symbol === "$" ? 'dollar' : 'heart');
+            fallingElement.innerHTML = symbol;
+            fallingElement.style.left = `${event.clientX}px`;
+            fallingElement.style.top = `${event.clientY}px`;
+            document.body.appendChild(fallingElement);
+
+            // Retirer l'élément après 2 secondes
+            setTimeout(() => {
+                fallingElement.remove();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
